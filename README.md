@@ -374,7 +374,9 @@ ___
 
 # Command Line Interface
 
-## electron-vite
+
+<details><summary>Click to expand..</summary>
+
 
 ### Aliases:
 - `electron-vite dev`
@@ -445,4 +447,4 @@ When using the `--rendererOnly` option, the `electron-vite` command must be run 
 - The `--noSandbox` option forces Electron to run without sandboxing. It's used when running Electron as root on Linux.  
 - The `--skipBuild` option skips the build step and starts the Electron app to preview.
 
-
+</details>
