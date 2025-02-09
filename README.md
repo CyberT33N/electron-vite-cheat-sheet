@@ -615,6 +615,56 @@ ___
 
 <details><summary>Click to expand..</summary>
 
+Hier ist dein Cheat Sheet im Markdown-Format:  
+
+
+## Create a Browser Window with HMR
+
+In order to use HMR in the renderer, use environment variables to determine whether the window browser loads a local HTML file or a local URL.
+
+### Example Code:
+
+```js
+function createWindow() {
+  // Create the browser window
+  const mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, '../preload/index.js')
+    }
+  });
+
+  // Load the local URL for development or the local HTML file for production
+  if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
+  } else {
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+  }
+}
+```
+
+The variable `ELECTRON_RENDERER_URL` is the local URL where Vite is running.
+
+## Multi-Page Handling
+
+If there are multiple pages, use it like this:
+
+```js
+if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
+  mainWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/view.html`);
+} else {
+  mainWindow.loadFile(path.join(__dirname, '../renderer/view.html'));
+}
+```
+
+## Notes
+
+- In **development**, the renderer `index.html` file must reference your script code using:  
+  ```html
+  <script type="module">...</script>
+  ```
+- In **production**, the `BrowserWindow` should load the **compiled** `index.html` from the output directory, not the source code.
 
 
 </details>
