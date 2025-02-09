@@ -791,6 +791,322 @@ Hot reloading **only works in development** mode.
 
 
 
+# 🛠️ Env Variables & Modes in electron-vite
+
+<details><summary>Click to expand..</summary>
+
+## 💡 TIPS  
+🔹 **Empfohlen:** Lies zuerst [Vite's Env Variables & Modes Dokumentation](https://vitejs.dev/guide/env-and-mode.html).  
+
+---
+
+## 🌍 Global Env Variables  
+
+electron-vite lädt Umgebungsvariablen aus dem Projekt-Root und verwendet **verschiedene Präfixe**, um die Reichweite zu begrenzen.  
+
+### 🔑 Standard-Prefixe  
+| Prefix             | Verfügbar in                 |
+|--------------------|----------------------------|
+| `MAIN_VITE_`      | Nur **Main Process**       |
+| `PRELOAD_VITE_`   | Nur **Preload Scripts**    |
+| `RENDERER_VITE_`  | Nur **Renderer**           |
+| `VITE_`           | **Überall** verfügbar      |
+
+### 🔍 Beispiel `.env` Datei  
+```env
+KEY=123                # ❌ Nicht verfügbar
+MAIN_VITE_KEY=123      # ✅ Nur Main Process
+PRELOAD_VITE_KEY=123   # ✅ Nur Preload Scripts
+RENDERER_VITE_KEY=123  # ✅ Nur Renderer
+VITE_KEY=123           # ✅ Überall verfügbar
+```
+
+---
+
+## ⚙️ Custom Env Prefix  
+👉 Falls du ein anderes Präfix benötigst, kannst du `envPrefix` setzen:  
+
+```js
+// electron.vite.config.js
+export default defineConfig({
+  main: {
+    envPrefix: 'M_VITE_'
+  }
+  // ...
+})
+```
+
+📌 Dadurch sind nur Variablen mit `M_VITE_` im Main Process verfügbar.
+
+---
+
+## 📝 TypeScript Unterstützung  
+Falls du TypeScript nutzt, füge **Type-Definitionen** für `import.meta.env` in `env.d.ts` hinzu:  
+
+```ts
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly MAIN_VITE_SOME_KEY: string
+  // Weitere Env Variablen...
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+```
+
+🎯 **Vorteile**:  
+✅ **Type Checking**  
+✅ **Intellisense für Umgebungsvariablen**  
+
+---
+
+## 🚀 Modes in electron-vite  
+
+### 🔄 Standard-Modi  
+| Command               | Mode        |
+|-----------------------|------------|
+| `npm run dev`        | **development** |
+| `npm run build`      | **production**  |
+| `npm run preview`    | **production**  |
+
+### 🏗️ Modus überschreiben  
+Nutze `--mode`, um den Modus zu ändern:  
+```sh
+npm run dev --mode=staging
+```
+📌 Siehe [Vite Modes](https://vitejs.dev/guide/env-and-mode.html) für Details.
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+
+
+
+
+# Source Code Protection in Electron
+
+<details><summary>Click to expand..</summary>
+
+## 📌 NOTE  
+Source code protection is available since **electron-vite 1.0.9**.
+
+### 🚨 Why Protect Your Code?  
+Electron uses JavaScript, making it easy for attackers to:
+- Unpack applications  
+- Modify logic to bypass restrictions  
+- Repackage and redistribute cracked versions  
+
+## 🛠️ Solutions  
+Besides moving commercial logic to the server, code hardening is essential:
+
+1. **Uglify / Obfuscator** → Reduces readability of JS code  
+2. **Native Encryption** → Encrypts bundle via XOR/AES inside a Node Addon  
+3. **ASAR Encryption** → Encrypts the Electron ASAR file, modifies Electron source to decrypt before reading  
+4. **V8 Bytecode** → Uses Node's `vm` module to generate V8 bytecode  
+
+### 🆚 Comparison Table  
+
+| Protection Method  | Unpack | Tampering | Readability | Repackaging | Access Cost | Overall Protection |
+|--------------------|--------|-----------|-------------|-------------|-------------|---------------------|
+| **Obfuscator**     | Easy   | Easy      | Easy        | Easy        | Low         | Low                 |
+| **Native Encryption** | High  | Easy      | Easy        | Easy        | High        | Middle              |
+| **ASAR Encryption** | High  | Middle    | Easy        | Easy        | High        | Middle              |
+| **V8 Bytecode**    | High   | High      | High        | Easy        | Middle      | High                |
+
+👉 **V8 Bytecode is currently the most effective solution.**
+
+---
+
+## 🎯 What is V8 Bytecode?  
+V8 Bytecode is a **compiled form of JavaScript** used by the V8 engine.  
+✅ Protects source code  
+✅ Improves performance  
+
+### **electron-vite Implementation**  
+- Parses bundles and determines if they should be compiled to bytecode  
+- Uses Electron to compile `.jsc` files  
+- Generates a loader for Electron to run bytecode modules  
+- Supports selective chunk compilation  
+
+---
+
+## 🚀 Enable Bytecode Protection  
+Use the `bytecodePlugin` plugin in **electron-vite**:
+
+```js
+import { defineConfig, bytecodePlugin } from 'electron-vite'
+
+export default defineConfig({
+  main: { plugins: [bytecodePlugin()] },
+  preload: { plugins: [bytecodePlugin()] },
+  renderer: { /* ... */ }
+})
+```
+
+⚠️ **Important Notes:**  
+- `bytecodePlugin` **only works in production**.  
+- The **preload script must disable the sandbox** (`sandbox: false`).  
+
+---
+
+## 🔧 bytecodePlugin Options  
+
+### `chunkAlias`  
+- **Type:** `string | string[]`  
+- Instructs which chunks should be compiled to bytecode.  
+
+### `transformArrowFunctions`  
+- **Type:** `boolean` (default: `true`)  
+- Converts arrow functions to normal functions.  
+
+### `removeBundleJS`  
+- **Type:** `boolean` (default: `true`)  
+- If `false`, retains original `.js` files along with bytecode.  
+
+### `protectedStrings`  
+- **Type:** `string[]`  
+- Protects sensitive strings (e.g., encryption keys) using `String.fromCharCode()`.  
+
+Example:  
+```js
+import { defineConfig, bytecodePlugin } from 'electron-vite'
+
+export default defineConfig({
+  main: { plugins: [bytecodePlugin({ protectedStrings: ['ABC'] })] }
+})
+```
+
+⚠️ **Minification (`build.minify`) must be disabled** when protecting strings!  
+
+---
+
+## 🏗️ Multi-Platform & Architecture Builds  
+
+### ✅ Multi-Platform on Same Architecture  
+Example:  
+- **64-bit** Electron app for **MacOS, Windows, Linux** from a **64-bit MacOS** machine.  
+
+### ⚠️ Multi-Architecture on Same Platform  
+If building for **x64 on arm64 MacOS**, set `ELECTRON_EXEC_PATH`:
+
+```js
+import { defineConfig } from 'electron-vite'
+
+export default defineConfig(() => {
+  process.env.ELECTRON_EXEC_PATH = '/path/to/electron-x64/electron.app'
+
+  return {
+    // electron-vite config
+  }
+})
+```
+
+You can install Electron for another architecture using:  
+```sh
+npm install --arch=ia32 electron
+```
+
+🚨 **Bytecode is CPU-agnostic, but run tests to avoid rare CPU compatibility issues.**
+
+---
+
+## ❓ FAQ  
+
+### 🔍 Does it affect code organization?  
+- **Yes**: `Function.prototype.toString()` **won't work** (source code isn't distributed).  
+- **No**: No impact on execution performance (minor improvement possible).  
+
+### 📦 Impact on app size?  
+- Small bundles (**< 1MB**) → Significant bytecode size increase.  
+- Large bundles (**> 2MB**) → No noticeable size difference.  
+
+### 🔐 How secure is it?  
+- Currently **no known tools** exist to decompile V8 bytecode.  
+
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
