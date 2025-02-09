@@ -476,6 +476,126 @@ When using the `--rendererOnly` option, the `electron-vite` command must be run 
 
 
 
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+# Development
+
+<details><summary>Click to expand..</summary>
+
+# Project Structure 
+- It is recommended to use the following project structure:
+```
+.
+├──src
+│  ├──main
+│  │  ├──index.ts
+│  │  └──...
+│  ├──preload
+│  │  ├──index.ts
+│  │  └──...
+│  └──renderer    # with vue, react, etc.
+│     ├──src
+│     ├──index.html
+│     └──...
+├──electron.vite.config.ts
+├──package.json
+└──...
+```
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+
+
+### `dependencies` vs. `devDependencies`
+
+<details><summary>Click to expand..</summary>
+
+#### **1. Was ist der Unterschied?**  
+- **`dependencies`** → Alles, was die App **zur Laufzeit braucht** (z. B. Datenbank-Module, API-Clients).  
+- **`devDependencies`** → Alles, was nur **zur Entwicklung nötig** ist (z. B. `electron-vite`, `eslint`, `webpack`).  
+
+#### **2. Warum `externalizeDepsPlugin` nutzen?**  
+Beim Bauen der App mit `electron-vite` gibt es zwei Möglichkeiten:  
+1. **Externe Module nicht bundlen** (schneller & kleiner, aber muss vorhanden sein).  
+2. **Alles bundlen** (größer, aber garantiert, dass alles funktioniert).  
+
+💡 **Best Practice:**  
+- **Main Process & Preload** → **Externe Module NICHT bundlen** (`externalizeDepsPlugin`).  
+- **Renderer (UI)** → **Alles bundlen** (damit es überall läuft).  
+
+#### **3. Was passiert beim Packen?**  
+- **Alles in `dependencies` wird mitgeliefert.**  
+- **`devDependencies` werden ignoriert.**  
+
+#### **4. Ausnahme: ESM-Only-Module**  
+Manche Module (z. B. `lowdb`, `node-fetch`) funktionieren nur als ESM. Die kann `electron-vite` nicht einfach weglassen, sondern muss sie in ein **CommonJS-Modul** umwandeln.  
+
+Dafür:
+```js
+externalizeDepsPlugin({ exclude: ['lowdb'] })
+```
+Dann sorgt `rollupOptions` dafür, dass `lowdb` trotzdem sauber geladen wird.  
+
+---
+
+### **🚀 Fazit**  
+1. **`dependencies`** für alles, was die App braucht, wenn sie läuft.  
+2. **`devDependencies`** nur für Entwicklungstools.  
+3. **`externalizeDepsPlugin`** hält den Main Process schlank, aber ESM-Module müssen manchmal explizit gebundled werden.  
+4. **Renderer-UI wird immer vollständig gebundled**, um Probleme zu vermeiden.
+   
+</details>
+
+
+
+
+
+
+
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
