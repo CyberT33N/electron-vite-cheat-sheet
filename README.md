@@ -604,6 +604,9 @@ Dann sorgt `rollupOptions` dafür, dass `lowdb` trotzdem sauber geladen wird.
 
 
 
+
+
+
 <br><br>
 <br><br>
 ___
@@ -679,6 +682,92 @@ if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+# Hot Reloading 
+- https://electron-vite.org/guide/hot-reloading
+  
+<details><summary>Click to expand..</summary>
+
+Hier ist dein Cheat Sheet für **Hot Reloading** in Markdown-Format:  
+
+## ⚠️ NOTE  
+Hot reloading is available since **electron-vite 1.0.8**.
+
+## What is Hot Reloading?  
+
+Hot reloading allows for **quick rebuilding and restarting** of the Electron app when the **main process** or **preload scripts** change.  
+Technically, it's not true hot reloading, but it offers a **better development experience**.
+
+## 🔥 How `electron-vite` Implements Hot Reloading  
+
+1. **Enables Rollup watcher** to detect changes in the main process and preload scripts.  
+2. **Rebuilds & restarts** the Electron app when main process modules change.  
+3. **Rebuilds & reloads** renderers when preload script modules change.  
+
+## 🚀 Enabling Hot Reloading  
+
+You have two options:  
+
+### 1️⃣ CLI Option (Recommended)  
+Use `-w` or `--watch` flag when running the dev server:  
+```sh
+electron-vite dev --watch
+```
+
+### 2️⃣ Config Option  
+Set `build.watch = {}` in the configuration file:  
+
+```js
+export default {
+  build: {
+    watch: {} // Enables watcher with default options
+  }
+}
+```
+For advanced settings, refer to `WatcherOptions`.
+
+## ⚠️ NOTE  
+Hot reloading **only works in development** mode.
+
+## When to Use Hot Reloading?  
+
+- Since **reload timing is unpredictable**, hot reloading **isn't always beneficial**.  
+- It's best to **use the CLI option** to toggle it on/off **as needed**.  
+
+</details>
 
 
 
