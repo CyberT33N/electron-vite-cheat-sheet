@@ -789,6 +789,15 @@ Hot reloading **only works in development** mode.
 
 
 
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+
+
 
 
 # 🛠️ Env Variables & Modes in electron-vite
@@ -877,6 +886,26 @@ Nutze `--mode`, um den Modus zu ändern:
 npm run dev --mode=staging
 ```
 📌 Siehe [Vite Modes](https://vitejs.dev/guide/env-and-mode.html) für Details.
+
+
+
+
+
+
+
+Example Usage:
+```typescript
+ try {
+    window.electron?.send('execute-command', `rclone listremotes | grep '^${import.meta.env.VITE_RCLONE_PROTON_CONFIG_NAME}:$'`)
+} catch (error) {
+    console.error('Error while checking the configuration:', error)
+    setIsLoading(false)
+}
+```
+
+
+
+
 
 </details>
 
