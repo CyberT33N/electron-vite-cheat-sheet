@@ -19,9 +19,10 @@ package.json
 {
   "main": "./out/main/index.js",
   "scripts": {
-    "start": "electron-vite preview", // start electron app to preview production build
-    "dev": "electron-vite dev", // start dev server and electron app
-    "prebuild": "electron-vite build" // build for production
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev --watch",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
   }
 }
 ```
