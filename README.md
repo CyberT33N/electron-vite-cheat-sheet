@@ -939,6 +939,108 @@ Example Usage:
 
 
 
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+
+
+
+
+# Debugging
+
+<details><summary>Click to expand..</summary>
+
+`electron-vite` supports debugging both the main process and the renderer process code.
+
+## TIP
+
+When you customize the build output directory via the `--outDir` CLI argument, the debugger configuration should also add this argument. But this is not needed when customizing via `build.outDir` of the configuration file.
+
+## VSCode
+
+Add a file `.vscode/launch.json` with the following configuration:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Main Process",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-vite",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-vite.cmd"
+      },
+      "runtimeArgs": ["--sourcemap"],
+      "env": {
+        "REMOTE_DEBUGGING_PORT": "9222"
+      }
+    },
+    {
+      "name": "Debug Renderer Process",
+      "port": 9222,
+      "request": "attach",
+      "type": "chrome",
+      "webRoot": "${workspaceFolder}/src/renderer",
+      "timeout": 60000,
+      "presentation": {
+        "hidden": true
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug All",
+      "configurations": ["Debug Main Process", "Debug Renderer Process"],
+      "presentation": {
+        "order": 1
+      }
+    }
+  ]
+}
+```
+
+Then set some breakpoints in the (main process or renderer process) source code. Go to the **Debug** view and ensure **Debug All** is selected. You can then press `F5` to start debugging.
+
+## NOTE
+
+You can also choose **Debug Main Process** to only debug the main process. Since renderer debugging can only be attached, it is not possible to debug the renderer process alone.
+  
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <br><br>
 <br><br>
