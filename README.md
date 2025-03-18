@@ -515,6 +515,200 @@ ___
 
 
 
+<br><br>
+<br><br>
+
+
+### Detect debug mode:
+- electron-vite will automatically set `NODE_ENV` with `development` or `production`. They also set `NODE_ENV_ELECTRON_VITE` with the same values
+- https://electron-vite.org/guide/env-and-mode#modes
+  - By default, dev command runs in development mode, the build and preview command runs in production mode. You can overwrite the default mode used for a command by passing the --mode option flag. See Vite Modes.
+
+/main/index.ts:
+```
+const currentFilePath = fileURLToPath(import.meta.url)
+const currentDirPath = path.dirname(currentFilePath)
+const isDev = process.env.NODE_ENV !== 'production'
+const windowManager = new WindowManager(isDev, path.join(currentDirPath, '../preload/index.js'))
+```
+
+WindowManager():
+```typescript
+import { BrowserWindow, ipcMain, screen, app } from 'electron';
+import Store from 'electron-store';
+import path from 'path';
+
+interface WindowBounds {
+    width: number;
+    height: number;
+    x?: number;
+    y?: number;
+}
+
+interface StoreSchema {
+    windowBounds: WindowBounds;
+}
+
+type WindowControlAction = 'minimize' | 'maximize' | 'close';
+
+type WindowEventName = 'resize' | 'move';
+
+/**
+ * Verwaltet das Hauptfenster der Anwendung
+ */
+export class WindowManager {
+    private mainWindow: BrowserWindow | null;
+    private readonly isDev: boolean;
+    private readonly preloadPath: string;
+    private readonly store: Store<StoreSchema>;
+
+    /**
+     * Erstellt einen neuen WindowManager
+     * @param {boolean} isDev - Gibt an, ob die Anwendung im Entwicklungsmodus läuft
+     * @param {string} preloadPath - Pfad zur Preload-Datei
+     */
+    constructor(isDev: boolean, preloadPath: string) {
+        this.mainWindow = null;
+        this.isDev = isDev;
+        this.preloadPath = preloadPath;
+        this.store = new Store<StoreSchema>();
+    }
+
+    /**
+     * Erstellt das Hauptfenster der Anwendung
+     * @returns {BrowserWindow} Das erstellte Hauptfenster
+     */
+    createWindow(): BrowserWindow {
+        const primaryDisplay = screen.getPrimaryDisplay();
+        const { width, height } = primaryDisplay.workAreaSize;
+
+        // Lade die gespeicherte Fensterposition
+        const windowBounds = this.store.get('windowBounds', {
+            width: width,
+            height: height,
+            x: undefined,
+            y: undefined
+        });
+
+        console.log('Creating window with preload path:', this.preloadPath);
+
+        this.mainWindow = new BrowserWindow({
+            width: windowBounds.width,
+            height: windowBounds.height,
+            x: windowBounds.x,
+            y: windowBounds.y,
+            frame: false,
+            webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true,
+                preload: this.preloadPath
+            }
+        });
+
+        // Load the app
+        if (this.isDev) {
+            this.mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] || '');
+            this.mainWindow.webContents.openDevTools();
+        } else {
+            this.mainWindow.loadFile(path.join(app.getAppPath(), 'out/renderer/index.html'));
+        }
+
+        // Speichere die Fensterposition bei Änderungen
+        this.mainWindow.on('resize', () => {
+            const bounds = this.mainWindow?.getBounds();
+            if (bounds) {
+                this.store.set('windowBounds', bounds);
+            }
+        });
+
+        this.mainWindow.on('move', () => {
+            const bounds = this.mainWindow?.getBounds();
+            if (bounds) {
+                this.store.set('windowBounds', bounds);
+            }
+        });
+
+        this.setupWindowControls();
+        this.setupTabNavigation();
+        this.setupCloseHandler();
+
+        return this.mainWindow;
+    }
+
+    /**
+     * Richtet die Fenstersteuerung ein
+     * @private
+     */
+    private setupWindowControls(): void {
+        ipcMain.on('window-control', (_, action: WindowControlAction) => {
+            if (!this.mainWindow) return;
+
+            switch (action) {
+                case 'minimize':
+                    this.mainWindow.minimize();
+                    break;
+                case 'maximize':
+                    if (this.mainWindow.isMaximized()) {
+                        this.mainWindow.unmaximize();
+                    } else {
+                        this.mainWindow.maximize();
+                    }
+                    break;
+                case 'close':
+                    this.mainWindow.close();
+                    break;
+            }
+        });
+    }
+
+    /**
+     * Richtet den Handler für das Schließen des Fensters ein
+     * @private
+     */
+    private setupCloseHandler(): void {
+        if (!this.mainWindow) return;
+
+        this.mainWindow.on('closed', () => {
+            this.mainWindow = null;
+        });
+    }
+
+    /**
+     * Gibt das aktuelle Hauptfenster zurück
+     * @returns {BrowserWindow | null} Das aktuelle Hauptfenster oder null
+     */
+    getWindow(): BrowserWindow | null {
+        return this.mainWindow;
+    }
+} 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <br><br>
