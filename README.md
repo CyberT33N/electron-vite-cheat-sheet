@@ -600,6 +600,27 @@ ___
 
 
 ### Detect debug mode:
+
+
+# Option 1 (is.dev)
+```typescript
+  // HMR for renderer base on electron-vite cli.
+  // Load the remote URL for development or the local html file for production.
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  } else {
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
+```
+
+
+
+
+
+<br><br>
+<br><br>
+
+# Option 2 (process.env.NODE_ENV):
 - electron-vite will automatically set `NODE_ENV` with `development` or `production`. They also set `NODE_ENV_ELECTRON_VITE` with the same values
 - https://electron-vite.org/guide/env-and-mode#modes
   - By default, dev command runs in development mode, the build and preview command runs in production mode. You can overwrite the default mode used for a command by passing the --mode option flag. See Vite Modes.
