@@ -448,6 +448,51 @@ When using the `--rendererOnly` option, the `electron-vite` command must be run 
 - The `--noSandbox` option forces Electron to run without sandboxing. It's used when running Electron as root on Linux.  
 - The `--skipBuild` option skips the build step and starts the Electron app to preview.
 
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+
+
+# Passing Arguments to Electron App
+- https://electron-vite.org/guide/dev#passing-arguments-to-electron-app
+
+<details><summary>Click to expand..</summary>
+
+
+You can append a `--` after the `electron-vite` CLI with the arguments to be passed.
+
+### Passing Electron CLI flags:
+```json
+"scripts": {
+  "dev": "electron-vite dev -- --trace-warnings"
+}
+```
+
+> **NOTE:**  
+> `electron-vite` already supports `--inspect`, `--inspect-brk`, `--remote-debugging-port`, and `--no-sandbox` commands, so you don't need to do this for these commands. See [Command Line Interface](https://electron-vite.org/guide/dev#passing-arguments-to-electron-app) for more details.
+
+### Passing application arguments:
+```json
+"scripts": {
+  "dev": "electron-vite dev -- p1 p2"
+}
+```
+All arguments after the double-dash (`--`) will be passed to the Electron application, and you can use `process.argv` to handle them.
+
+
+
+</details>
+
+
+
+
+
 </details>
 
 
