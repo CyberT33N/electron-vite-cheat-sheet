@@ -1548,6 +1548,48 @@ npm install --arch=ia32 electron
 
 
 
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+
+
+
+
+# Utils
+
+<details><summary>Click to expand..</summary>
+
+
+# electron-toolkit
+- You can find all here:
+  - https://github.com/alex8088/electron-toolkit?tab=readme-ov-file
+
+## @electron-toolkit/
+- https://www.npmjs.com/package/@electron-toolkit/utils
+
+## @electron-toolkit/preload
+- https://github.com/alex8088/electron-toolkit/tree/master/packages/preload
+
+
+  
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
