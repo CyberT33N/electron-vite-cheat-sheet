@@ -78,16 +78,49 @@ export default defineConfig({
 
 
 
+
+
+
+
+
+
+
+
+
+<br><br>
 <br><br>
 
 ## New project
+
+<details><summary>Click to expand..</summary>
+
 ```shell
 npm create @quick-start/electron@latest
 ```
 
+</details>
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+
+
+
 
 
 ## Boilerplate
+
+<details><summary>Click to expand..</summary>
+
 ```shell
 npx degit alex8088/electron-vite-boilerplate electron-app
 cd electron-app
@@ -95,6 +128,8 @@ cd electron-app
 npm install
 npm run dev
 ```
+
+</details>
 
 
 
