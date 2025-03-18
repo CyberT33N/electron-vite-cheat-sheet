@@ -608,7 +608,7 @@ ___
 ```
 const currentFilePath = fileURLToPath(import.meta.url)
 const currentDirPath = path.dirname(currentFilePath)
-const isDev = process.env.NODE_ENV !== 'production'
+const isDev = process.env.NODE_ENV === 'development';
 const windowManager = new WindowManager(isDev, path.join(currentDirPath, '../preload/index.js'))
 ```
 
