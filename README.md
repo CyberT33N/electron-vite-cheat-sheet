@@ -607,9 +607,9 @@ ___
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    await mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+   await mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 ```
 
@@ -708,10 +708,10 @@ export class WindowManager {
 
         // Load the app
         if (this.isDev) {
-            this.mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] || '');
+            await this.mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] || '');
             this.mainWindow.webContents.openDevTools();
         } else {
-            this.mainWindow.loadFile(path.join(app.getAppPath(), 'out/renderer/index.html'));
+           await  this.mainWindow.loadFile(path.join(app.getAppPath(), 'out/renderer/index.html'));
         }
 
         // Speichere die Fensterposition bei Änderungen
@@ -936,9 +936,9 @@ function createWindow() {
 
   // Load the local URL for development or the local HTML file for production
   if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
+    await mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+    await mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
   }
 }
 ```
@@ -951,9 +951,9 @@ If there are multiple pages, use it like this:
 
 ```js
 if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
-  mainWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/view.html`);
+  await mainWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/view.html`);
 } else {
-  mainWindow.loadFile(path.join(__dirname, '../renderer/view.html'));
+  await mainWindow.loadFile(path.join(__dirname, '../renderer/view.html'));
 }
 ```
 
