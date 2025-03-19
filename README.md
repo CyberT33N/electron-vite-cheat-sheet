@@ -151,6 +151,113 @@ npm run dev
 
 
 
+
+
+
+
+
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+# tsconfig
+
+
+
+<details><summary>Click to expand..</summary>
+
+tsconfig.json:
+```javascript
+{
+  "files": [],
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }]
+}
+```
+
+
+tsconfig.node.json:
+```javascript
+{
+     "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+     "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*"],
+     "compilerOptions": {
+       "composite": true,
+       "types": ["electron-vite/node"]
+     }
+   }
+```
+
+tsconfig.web.json:
+```javascript
+{
+     "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+     "include": [
+       "src/renderer/src/env.d.ts",
+       "src/renderer/src/**/*",
+       "src/renderer/src/**/*.vue",
+       "src/preload/*.d.ts"
+     ],
+     "compilerOptions": {
+       "composite": true,
+       "target": "ES2020",
+       "useDefineForClassFields": true,
+       "lib": ["ES2020", "DOM", "DOM.Iterable"],
+       "module": "ESNext",
+       "skipLibCheck": true,
+       "moduleResolution": "bundler",
+       "allowImportingTsExtensions": true,
+       "resolveJsonModule": true,
+       "isolatedModules": true,
+       "noEmit": true,
+       "jsx": "react-jsx",
+       "strict": true,
+       "noUnusedLocals": true,
+       "noUnusedParameters": true,
+       "noFallthroughCasesInSwitch": true,
+       "baseUrl": ".",
+       "paths": {
+         "@renderer/*": ["src/renderer/src/*"],
+         "@main/*": ["src/main/*"],
+         "@/*": ["src/*"]
+       }
+     }
+   }
+```
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <br><br>
 <br><br>
 ___
