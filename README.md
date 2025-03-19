@@ -360,7 +360,7 @@ ReactDOM.createRoot(rootElement).render(
 ## src\preload
 
 ### index.dts:
-```
+```typescript
 import { ElectronAPI } from '@electron-toolkit/preload'
 
 declare global {
@@ -372,7 +372,7 @@ declare global {
 ```
 
 ### index.ts:
-```
+```typescript
 import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge } from 'electron'
 
@@ -396,6 +396,11 @@ if (process.contextIsolated) {
     window.api = api
 }
 ```
+
+
+
+
+
 
 
 
@@ -454,8 +459,43 @@ ipcMain.on(CHANNEL_NAME, async (event, data) => {
 
 
 
+<br><br>
+<br><br>
 
 
+# src/renderer
+
+## index.ts:
+```
+
+/**
+ * Hook zur Verwaltung der Datei-Aktionen
+ * @returns {FileActions} Objekt mit handleOpenFolder Funktion
+ */
+export const useFileActions = (): FileActions => {
+    useEffect(() => {
+        if (!window.electron) {return}
+
+        const cleanup = window.electron.ipcRenderer.on('open-folder-error', (_, errorMessage: string) => {
+            console.error('Fehler beim Öffnen des Ordners:', errorMessage)
+        })
+
+        return () => cleanup?.()
+    }, [])
+
+    const handleOpenFolder = useCallback((path: string): void => {
+        if (!window.electron) {
+            console.error('Electron API nicht verfügbar')
+            return
+        }
+        window.electron.ipcRenderer.send('open-folder', path)
+    }, [])
+
+    return {
+        handleOpenFolder
+    }
+} 
+```
 
 
 
