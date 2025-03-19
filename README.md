@@ -158,10 +158,104 @@ ___
 <br><br>
 
 
-# Config
+# Config (electron.vite.config.ts)
 - https://electron-vite.org/config/
 
 <details><summary>Click to expand..</summary>
+
+
+# Examples
+
+## Config without using VITE
+- If you e.g. hosting your own angular repo localhost with different port we have to disable the render.
+
+```typescript
+import { is } from '@electron-toolkit/utils'
+
+if (is.dev) {
+    this.baseUrl = process.env['ELECTRON_RENDERER_URL_CUSTOM']
+} else {
+    this.baseUrl = 'https://yyyyyyyyyyyyyyy.com'
+}
+
+this.win = new BrowserWindow({
+    width,
+    height,
+    x,
+    y,
+    alwaysOnTop: false,
+    autoHideMenuBar: true,
+    icon,
+    webPreferences: {
+        // electron-vite
+        preload: path.join(__dirname, '../preload/index.js'),
+        sandbox: false,
+    }
+})
+
+await this.win.loadURL(this.baseUrl);
+
+if (is.dev) {
+    this.win.webContents.openDevTools();
+}
+
+```
+
+```typescript
+import path from 'path'
+
+import {
+    defineConfig, externalizeDepsPlugin,
+    bytecodePlugin, type UserConfig
+} from 'electron-vite'
+
+export default defineConfig({
+    main: {
+        plugins: [externalizeDepsPlugin()
+            // bytecodePlugin()
+        ]
+    },
+    preload: {
+        plugins: [
+            externalizeDepsPlugin()
+            // bytecodePlugin()
+        ]
+    },
+    renderer: {
+        build: {
+            rollupOptions: {
+                input: {
+                    // Wir brauchen keine explizite Eingabe, da wir direkt vom ElectronBackendService laden
+                },
+            }
+        },
+        resolve: {
+            alias: {
+                '@renderer': path.resolve('src/renderer/src'),
+                '@main': path.resolve('src/main')
+            }
+        }
+    }
+} as UserConfig) 
+```
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+
+# Full config doc:
+
+<details><summary>Click to expand..</summary>
+
+
+
 
 When running `electron-vite` from the command line, it will automatically try to resolve a config file named `electron.vite.config.js` inside the project root. The most basic config file looks like this:
 
@@ -372,7 +466,7 @@ export default defineConfig(({ command, mode }) => {
 </details>
 
 
-
+<details>
 
 
 
