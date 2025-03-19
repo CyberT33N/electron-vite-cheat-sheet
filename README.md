@@ -8,90 +8,22 @@
 
 <details><summary>Click to expand..</summary>
 
+
 ```shell
-npm i electron-vite -D
+npm i @electron-toolkit/preload @electron-toolkit/utils
+npm i -D electron-vite @electron-toolkit/tsconfig cross-env electron-builder
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <br><br>
 <br><br>
 
 package.json
-```javascript
-{
-  "main": "./out/main/index.js",
-  "scripts": {
-    "start": "electron-vite preview",
-    "dev": "electron-vite dev --watch",
-    "build": "electron-vite build",
-    "preview": "electron-vite preview",
-  }
-}
-```
+- https://github.com/CyberT33N/electron-vite-cheat-sheet/blob/main/README.md#packagejson
 
 electron.vite.config.js
-```javascript
-import { defineConfig } from 'electron-vite'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-export default defineConfig({
-    main: {
-    // Eintritspunkt für den Hauptprozess
-        entry: 'src/main/index.js',
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, './src')
-            }
-        }
-    },
-    preload: {
-    // Eintritspunkt für Preload-Skripte
-        entry: 'src/preload/index.js',
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, './src')
-            }
-        }
-    },
-    renderer: {
-    // Eintritspunkt für den Renderer-Prozess
-        entry: 'src/renderer/index.html',
-        root: path.resolve(__dirname, 'src/renderer'),
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, './src')
-            }
-        },
-        build: {
-            rollupOptions: {
-                input: {
-                    index: path.resolve(__dirname, 'src/renderer/index.html')
-                }
-            }
-        }
-    }
-}) 
-```
+- https://github.com/CyberT33N/electron-vite-cheat-sheet/blob/main/README.md#config-electronviteconfigts
+- 
 </details>
 
 
