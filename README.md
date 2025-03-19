@@ -1356,7 +1356,7 @@ When you customize the build output directory via the `--outDir` CLI argument, t
 ## NPM Run script
 - On Windows we must use cross-env on linux you can remove it
 ```javascript
-    "start:debug-main": "cross-env REMOTE_DEBUGGING_PORT=9222 electron-vite dev --sourcemap",
+    "start:debug-main": "cross-env REMOTE_DEBUGGING_PORT=9222 ELECTRON_ENABLE_LOGGING=1 electron-vite dev --sourcemap",
     "start:debug-renderer": "node --inspect-brk=9222",
     "debug:all": "npm run start:debug-main & npm run start:debug-renderer",
 ```
