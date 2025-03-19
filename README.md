@@ -602,7 +602,7 @@ export default defineConfig(({ command, mode }) => {
 </details>
 
 
-<details>
+</details>
 
 
 
@@ -1850,6 +1850,23 @@ sudo chown root:root node_modules/electron/dist/chrome-sandbox && sudo chmod 475
 - Related to (https://electron-vite.org/guide/cli#preview-options) `The --noSandbox option will force Electron run without sandboxing. It is commonly used to enable Electron to run as root on Linux.`
   
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
