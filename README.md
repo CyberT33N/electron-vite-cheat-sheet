@@ -1,4 +1,4 @@
-# electron-vite-cheat-sheet
+# electron-vite Cheat Sheet
 
 
 # Install
@@ -12,6 +12,25 @@
 npm i electron-vite -D
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
 <br><br>
 
 package.json
@@ -130,6 +149,84 @@ npm run dev
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+# package.json
+
+
+
+<details><summary>Click to expand..</summary>
+
+```javascript
+{
+{
+  "name": "xxxxxxx",
+  "version": "31.0.0",
+  "description": "xxxxxxxxxxxx",
+  "main": "out/main/index.js",
+"scripts": {
+    "test-only:linux": "bash test-only.sh",
+    "test-only:windows": "powershell -ExecutionPolicy Bypass -NoProfile -NoLogo -Command \".\\test-only.ps1\"",
+    "test": "vitest --typecheck --coverage --disable-console-intercept --watch=false",
+    "test:watch": "vitest --typecheck --watch",
+    "test:integration": "vitest run --typecheck --testTimeout=300000 --coverage --disable-console-intercept --watch=false --config vitest.integration.config.ts",
+    "test:unit": "vitest run --typecheck --testTimeout=300000 --coverage --disable-console-intercept --watch=false --config vitest.unit.config.ts",
+    "test:production": "vitest run --testTimeout=300000 --coverage --disable-console-intercept --watch=false --config vitest.production.config.ts",
+    "start": "electron-vite preview",
+    "start:debug-main": "cross-env REMOTE_DEBUGGING_PORT=9222 ELECTRON_ENABLE_LOGGING=1 electron-vite dev --sourcemap",
+    "start:debug-renderer": "node --inspect-brk=9222",
+    "debug:all": "npm run start:debug-main & npm run start:debug-renderer",
+    "dev": "electron-vite dev --watch",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "vue-tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "build": "npm run typecheck && electron-vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "build:unpack": "npm run build && electron-builder --dir",
+    "build:win": "npm run build && electron-builder --win",
+  },
+
+```
+
+  
+</details>
+
+
+
+
+
+
 
 
 
