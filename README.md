@@ -603,6 +603,7 @@ ___
 
 
 # Option 1 (is.dev)
+- ELECTRON_RENDERER_URL will be set electron-vite by default so no need to add it to .env
 ```typescript
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
@@ -634,6 +635,7 @@ const windowManager = new WindowManager(isDev, path.join(currentDirPath, '../pre
 ```
 
 WindowManager():
+- ELECTRON_RENDERER_URL will be set electron-vite by default so no need to add it to .env
 ```typescript
 import { BrowserWindow, ipcMain, screen, app } from 'electron';
 import Store from 'electron-store';
@@ -922,7 +924,7 @@ Hier ist dein Cheat Sheet im Markdown-Format:
 In order to use HMR in the renderer, use environment variables to determine whether the window browser loads a local HTML file or a local URL.
 
 ### Example Code:
-
+- ELECTRON_RENDERER_URL will be set electron-vite by default so no need to add it to .env
 ```js
 function createWindow() {
   // Create the browser window
