@@ -282,6 +282,224 @@ tsconfig.web.json:
 
 
 
+<br><br>
+<br><br>
+___
+<br><br>
+<br><br>
+
+
+# Structure
+- Boilerplate example here:
+  - https://github.com/alex8088/electron-vite-boilerplate
+
+
+<details><summary>Click to expand..</summary>
+
+
+
+## src\render
+
+### index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>CMCU</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
+</html>
+```
+
+
+### src
+
+#### main.tsx
+```typescript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+import './styles/index.css';
+
+/**
+ * Die Root-Element-ID, die im HTML-Template definiert sein muss
+ */
+const ROOT_ELEMENT_ID: string = 'root';
+
+/**
+ * Das Root-Element aus dem DOM holen und TypeScript-sicher machen
+ */
+const rootElement: HTMLElement | null = document.getElementById(ROOT_ELEMENT_ID);
+
+if (!rootElement) {
+    throw new Error(`Element mit ID "${ROOT_ELEMENT_ID}" wurde nicht gefunden`);
+}
+
+/**
+ * React-Root erstellen und App rendern
+ */
+ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
+); 
+```
+
+
+
+<br><br>
+<br><br>
+
+
+## src\preload
+
+### index.dts:
+```
+import { ElectronAPI } from '@electron-toolkit/preload'
+
+declare global {
+  interface IWindow {
+    electron: ElectronAPI
+    api: unknown
+  }
+}
+```
+
+### index.ts:
+```
+import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge } from 'electron'
+
+// Custom APIs for renderer
+const api = {}
+
+// Use `contextBridge` APIs to expose Electron APIs to
+// renderer only if context isolation is enabled, otherwise
+// just add to the DOM global.
+if (process.contextIsolated) {
+    try {
+        contextBridge.exposeInMainWorld('electron', electronAPI)
+        contextBridge.exposeInMainWorld('api', api)
+    } catch (error) {
+        console.error(error)
+    }
+} else {
+    // @ts-expect-error (define in dts)
+    window.electron = electronAPI
+    // @ts-expect-error (define in dts)
+    window.api = api
+}
+```
+
+
+
+
+
+
+<br><br>
+<br><br>
+
+## src\main
+
+### index.ts:
+- Simplified and not working just for the relevant parts
+- ELECTRON_RENDERER_URL will be set by electron-vite by default
+```typescript
+import { is } from '@electron-toolkit/utils'
+
+this.mainWindow = new BrowserWindow({
+    width: windowBounds.width,
+    height: windowBounds.height,
+    x: windowBounds.x,
+    y: windowBounds.y,
+    frame: false,
+    autoHideMenuBar: true,
+    webPreferences: {
+        // electron-vite
+        sandbox: false,
+        // nodeIntegration: false,
+        // contextIsolation: true,
+        // electron-vite
+        preload: is.dev 
+          ? path.join(process.cwd(), 'out/preload/index.js') 
+          : path.join(__dirname, '../preload/index.js'),
+    }
+})
+
+
+if (is.dev) {
+    await this.mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
+    this.mainWindow.webContents.openDevTools()
+} else {
+    await this.mainWindow.loadFile(path.join(app.getAppPath(), 'out/renderer/index.html'))
+}
+
+
+ipcMain.on(CHANNEL_NAME, async (event, data) => {
+    console.log('ipcMain.on ', data);
+    const inputMsg: ElectronMessage = data;
+    const outputMsg: ElectronMessage = await new MessageHandlerService().handleMessages(inputMsg);
+
+    /** Callback with a response for an asynchronous request */
+    event.reply(CHANNEL_NAME, outputMsg)
+});
+```
+
+
+
+
+
+
+
+
+
+
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
