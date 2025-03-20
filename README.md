@@ -2108,7 +2108,7 @@ exposeElectronAPI()
 ```
 
 Then, use the Electron APIs directly in the renderer process：
-
+- The first parameter `_` is the event and must be set at .on()
 ```javascript
 // Send a message to the main process with no response
 window.electron.ipcRenderer.send('electron:say', 'hello')
