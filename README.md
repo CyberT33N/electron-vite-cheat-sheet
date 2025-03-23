@@ -1583,9 +1583,6 @@ ___
 
 
 
-
-
-
 # 🛠️ Env Variables & Modes in electron-vite
 
 <details><summary>Click to expand..</summary>
@@ -1597,7 +1594,7 @@ ___
 
 ## 🌍 Global Env Variables  
 
-electron-vite lädt Umgebungsvariablen aus dem Projekt-Root und verwendet **verschiedene Präfixe**, um die Reichweite zu begrenzen.  
+electron-vite nutzt die gleiche Logik für Umgebungsvariablen wie Vite und lädt Variablen aus `.env`-Dateien im Projekt-Root. Dabei werden **verschiedene Präfixe** verwendet, um die Reichweite zu begrenzen.  
 
 ### 🔑 Standard-Prefixe  
 | Prefix             | Verfügbar in                 |
@@ -1659,6 +1656,8 @@ interface ImportMeta {
 
 ## 🚀 Modes in electron-vite  
 
+electron-vite nutzt die gleiche Modus-Logik wie Vite:
+
 ### 🔄 Standard-Modi  
 | Command               | Mode        |
 |-----------------------|------------|
@@ -1673,15 +1672,38 @@ npm run dev --mode=staging
 ```
 📌 Siehe [Vite Modes](https://vitejs.dev/guide/env-and-mode.html) für Details.
 
+---
 
+## 🔍 Built-in Vite Constants  
+Vite stellt einige eingebaute Konstanten bereit, die electron-vite ebenfalls nutzt:
 
+| Konstante                   | Beschreibung |
+|-----------------------------|-------------|
+| `import.meta.env.MODE`      | Der aktuelle Modus (z. B. `development`, `production`). |
+| `import.meta.env.BASE_URL`  | Die Basis-URL der App. |
+| `import.meta.env.PROD`      | `true`, wenn die App im Produktionsmodus läuft. |
+| `import.meta.env.DEV`       | `true`, wenn die App im Entwicklungsmodus läuft. |
+| `import.meta.env.SSR`       | `true`, wenn das App-Rendering auf dem Server stattfindet. |
 
+📌 Diese Variablen werden während der Entwicklung als globale Variablen bereitgestellt und zur Build-Zeit statisch ersetzt, um Tree-Shaking zu ermöglichen.
 
+---
 
+## 📂 .env Datei Prioritäten  
+Vite (und damit electron-vite) lädt `.env`-Dateien in folgender Reihenfolge:
 
-Example Usage:
+1. `.env` (global für alle Modi)
+2. `.env.local` (global, aber in `.gitignore` enthalten)
+3. `.env.[mode]` (z. B. `.env.production` für `production`-Mode)
+4. `.env.[mode].local` (spezifisch für den Mode, aber in `.gitignore` enthalten)
+
+📌 **Höhere Priorität überschreibt niedrigere.** Variablen aus `.env.production` haben Vorrang vor denen aus `.env`. Bereits in der Umgebung gesetzte Variablen haben die höchste Priorität.
+
+---
+
+## 🔄 Beispielhafte Verwendung von Env-Variablen  
 ```typescript
- try {
+try {
     window.electron?.send('execute-command', `rclone listremotes | grep '^${import.meta.env.VITE_RCLONE_PROTON_CONFIG_NAME}:$'`)
 } catch (error) {
     console.error('Error while checking the configuration:', error)
@@ -1689,15 +1711,7 @@ Example Usage:
 }
 ```
 
-
-
-
-
 </details>
-
-
-
-
 
 
 
