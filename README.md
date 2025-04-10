@@ -1589,7 +1589,7 @@ ___
 
 ## 💡 TIPS  
 🔹 **Empfohlen:** Lies zuerst [Vite's Env Variables & Modes Dokumentation](https://vitejs.dev/guide/env-and-mode.html).  
-
+🔹 **Notice:** Wenn die .env-Datei gesetzt ist, dann wird diese gewinnen. Das heißt, wenn wir lokal npm run dev ausführen, dann werden die Umgebungsvariablen davon geladen. Das heißt, wenn wir parallel dazu noch eine .env-development hätten, dann würden diese Werte davon nicht geladen werden.
 ---
 
 ## 🌍 Global Env Variables  
